@@ -139,7 +139,7 @@ function Anatomy({ accent }) {
       <div className="container">
         <SectionHead num="01" label="Anatomy" title="Nine systems," em="one train." />
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: 32, alignItems: "start" }}>
+        <div className="anatomy-layout" style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: 32, alignItems: "start" }}>
           <div className="anatomy-stage" style={{ padding: "32px 0" }}>
             <TrainSVG
               accent={accent}

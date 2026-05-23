@@ -404,7 +404,7 @@ function Results({ accent }) {
       <div className="container">
         <SectionHead num="10" label="Results" title="What this train" em="actually does." />
 
-        <div className="grid-3" style={{ gap: 0, borderTop: "1px solid var(--rule-strong)" }}>
+        <div className="grid-3 results-grid" style={{ gap: 0, borderTop: "1px solid var(--rule-strong)" }}>
           {[
             { k: "GHG reduction", v: "≥ 90 %", d: "per passenger-km vs. private car. Higher on emissions-independent corridors." },
             { k: "Per-train daily replacement", v: "≈ 150 cars", d: "1 train · 200 passengers · displaces ≈150 single-occupancy vehicles." },
