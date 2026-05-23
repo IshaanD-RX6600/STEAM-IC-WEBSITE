@@ -1,0 +1,8 @@
+{
+  "name": "steam-ic-website",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npx serve \"Steam IC-handoff/steam-ic/project\" -p 3000",
+    "start": "npx serve \"Steam IC-handoff/steam-ic/project\" -p 3000"
+  }
+}

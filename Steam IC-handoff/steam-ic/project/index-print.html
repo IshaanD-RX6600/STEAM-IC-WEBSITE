@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NexRail — Engineering Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* === Print-only overrides === */
+    @page { size: letter portrait; margin: 14mm 12mm; }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        animation: none !important;
+        transition: none !important;
+      }
+
+      html, body {
+        background: var(--paper) !important;
+      }
+
+      /* Hide live UI chrome that doesn't belong on paper */
+      .topnav,
+      .chapter-rail,
+      .twk-panel,
+      .twk-fab,
+      .tog,
+      .pill,
+      button { display: none !important; }
+
+      /* Constrain section padding to fit nicer on letter portrait */
+      :root {
+        --pad-page: 10mm !important;
+        --pad-section: 14mm !important;
+        --content-max: 100% !important;
+      }
+
+      .section {
+        padding: 18mm 0 14mm !important;
+        break-inside: auto;
+      }
+
+      /* Force each top-level section to start on a new page,
+         but allow the very first to start at the top */
+      .section + .section { break-before: page; }
+
+      /* Avoid breaks inside cards / schematics / spec strips */
+      .card, .schematic, .spec-strip, .anatomy-stage,
+      .toronto-map, .dash, .hotspot, .anatomy-callout,
+      .section-head, .hero-top {
+        break-inside: avoid;
+      }
+
+      /* Make sure SVGs scale to width */
+      svg { max-width: 100% !important; height: auto !important; }
+
+      /* Hero: tighten */
+      .hero { padding-top: 0 !important; }
+      .hero h1 { font-size: 56pt !important; line-height: 0.96 !important; }
+      .hero .lede { font-size: 12pt !important; }
+
+      h1 { font-size: 56pt !important; }
+      h2 { font-size: 32pt !important; }
+      h3 { font-size: 16pt !important; }
+      .body-l { font-size: 12pt !important; line-height: 1.5 !important; }
+      .body-m { font-size: 10.5pt !important; line-height: 1.55 !important; }
+      .body-s { font-size: 9.5pt !important; line-height: 1.5 !important; }
+      .tiny { font-size: 8.5pt !important; }
+
+      /* Spec strip on hero */
+      .spec-strip { grid-template-columns: repeat(5, 1fr) !important; }
+      .spec-strip .value { font-size: 18pt !important; }
+
+      /* Grid simplifications */
+      .grid-2 { gap: 18px !important; }
+      .grid-3, .grid-4 { gap: 12px !important; }
+
+      /* Dark sections — print full bleed across the page */
+      .section--ink {
+        background: #0e0e10 !important;
+        color: #f6f4ee !important;
+        /* push beyond page margins so the dark goes edge-to-edge on the page */
+        margin-left: -12mm !important;
+        margin-right: -12mm !important;
+        padding-left: 22mm !important;
+        padding-right: 22mm !important;
+      }
+      .section--ink .container { max-width: 100% !important; padding: 0 !important; }
+
+      /* AI dashboard — keep dark background */
+      .dash { background: #0a0a0c !important; color: #d0d0d4 !important; }
+      .dash .panel { background: #0a0a0c !important; }
+
+      /* Toronto map — keep dark */
+      .toronto-map { background: #0e0e10 !important; color: #fff !important; }
+
+      /* References list — keep on one page if possible */
+      ol li { break-inside: avoid; }
+
+      /* Make absolute-positioned anatomy hotspots invisible/static on print */
+      .hotspot .ring::before { animation: none !important; }
+
+      /* Footer */
+      .footer {
+        break-before: auto;
+        padding: 18mm 0 0 !important;
+      }
+    }
+
+    /* Print preview: always use light styles even on-screen so the doc looks the same */
+    @media screen {
+      body { background: var(--paper); }
+    }
+  </style>
+
+  <script>
+    window.__NEXRAIL_DEFAULTS__ = /*EDITMODE-BEGIN*/{
+      "accent": "#b00020",
+      "livery": "white",
+      "showGrid": false,
+      "animationSpeed": 1.0,
+      "torontoLine": "yonge"
+    }/*EDITMODE-END*/;
+  </script>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="shared.jsx"></script>
+  <script type="text/babel" src="train-svg.jsx"></script>
+  <script type="text/babel" src="sections-1.jsx"></script>
+  <script type="text/babel" src="sections-2.jsx"></script>
+  <script type="text/babel" src="sections-3.jsx"></script>
+  <script type="text/babel" src="sections-4.jsx"></script>
+  <script type="text/babel" src="main.jsx"></script>
+
+  <!-- Auto-print: waits for fonts + Babel transforms + a small settle delay -->
+  <script type="text/babel">
+    (async function autoPrint() {
+      // Wait for fonts
+      try { if (document.fonts && document.fonts.ready) { await document.fonts.ready; } } catch (e) {}
+      // Wait until React has actually rendered the root
+      const waitForRoot = () => new Promise((resolve) => {
+        const check = () => {
+          const root = document.getElementById("root");
+          if (root && root.children.length > 0) return resolve();
+          requestAnimationFrame(check);
+        };
+        check();
+      });
+      await waitForRoot();
+      // Settle delay (give SVGs + observers + first paints time to land)
+      await new Promise((r) => setTimeout(r, 900));
+      window.print();
+    })();
+  </script>
+</body>
+</html>
