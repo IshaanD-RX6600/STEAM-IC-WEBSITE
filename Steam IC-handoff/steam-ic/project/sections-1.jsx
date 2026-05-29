@@ -2,7 +2,7 @@
 
 function Hero({ accent, showLabels }) {
   return (
-    <section className="hero section--paper" data-screen-label="01 Hero">
+    <section id="hero" className="hero section--paper" data-screen-label="01 Hero">
       <div className="container">
         <div className="hero-top">
           <div>

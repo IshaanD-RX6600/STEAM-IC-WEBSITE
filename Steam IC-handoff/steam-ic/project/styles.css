@@ -160,18 +160,23 @@ p { margin: 0; }
 .chapter-rail button[data-active="true"] .tick {
   width: 28px; background: var(--accent); height: 2px;
 }
+/* Hide label text on screens where the rail would overlap content (< 1600px) */
+@media (max-width: 1600px) {
+  .chapter-rail button > span:last-child { display: none; }
+}
+/* Rail hides below 1100px — hamburger menu takes over on mobile */
 @media (max-width: 1100px) { .chapter-rail { display: none; } }
 
 /* === Hamburger button (mobile nav trigger) === */
 .hamburger {
-  display: none;
   all: unset;
+  display: none;
   cursor: pointer;
   padding: 6px;
   color: var(--ink);
   line-height: 0;
 }
-@media (max-width: 1100px) {
+@media (max-width: 768px) {
   .hamburger { display: flex; align-items: center; justify-content: center; }
 }
 
