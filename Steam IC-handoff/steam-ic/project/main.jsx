@@ -24,30 +24,71 @@ const SECTIONS = [
   { id: "refs",          label: "References" },
 ];
 
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 60, behavior: "smooth" });
+}
+
 function TopNav() {
   const [time, setTime] = useState(() => new Date());
+  const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     const id = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
+  // Close menu on scroll
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handler = () => setMenuOpen(false);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, [menuOpen]);
   const hh = String(time.getHours()).padStart(2, "0");
   const mm = String(time.getMinutes()).padStart(2, "0");
   const ss = String(time.getSeconds()).padStart(2, "0");
   return (
-    <div className="topnav">
-      <div className="brand">
-        <Mark size={18} />
-        <span>NEXRAIL</span>
-        <span style={{ color: "var(--ink-mute)", marginLeft: 12, fontWeight: 400 }}>
-          / Engineering walk-through
-        </span>
+    <>
+      <div className="topnav">
+        <div className="brand">
+          <Mark size={18} />
+          <span>NEXRAIL</span>
+          <span style={{ color: "var(--ink-mute)", marginLeft: 12, fontWeight: 400 }}>
+            / Engineering walk-through
+          </span>
+        </div>
+        <div className="meta">
+          <div className="live"><span className="pulse" /> CCS LIVE</div>
+          <div>TORONTO · {hh}:{mm}:{ss} EDT</div>
+          <div>DOC v0.4</div>
+        </div>
+        <button
+          className="hamburger"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(o => !o)}
+        >
+          {menuOpen
+            ? <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square"><line x1="3" y1="3" x2="15" y2="15"/><line x1="15" y1="3" x2="3" y2="15"/></svg>
+            : <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square"><line x1="2" y1="5" x2="16" y2="5"/><line x1="2" y1="9" x2="16" y2="9"/><line x1="2" y1="13" x2="16" y2="13"/></svg>
+          }
+        </button>
       </div>
-      <div className="meta">
-        <div className="live"><span className="pulse" /> CCS LIVE</div>
-        <div>TORONTO · {hh}:{mm}:{ss} EDT</div>
-        <div>DOC v0.4</div>
-      </div>
-    </div>
+      {menuOpen && (
+        <div className="mobile-menu">
+          {SECTIONS.map((s, i) => (
+            <button
+              key={s.id}
+              className="mobile-menu-item"
+              onClick={() => { scrollToSection(s.id); setMenuOpen(false); }}
+            >
+              <span className="mobile-menu-num">{String(i + 1).padStart(2, "0")}</span>
+              <span className="mobile-menu-tick" />
+              <span className="mobile-menu-label">{s.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -81,10 +122,7 @@ function ChapterRail() {
         <button
           key={s.id}
           data-active={active === s.id}
-          onClick={() => {
-            const el = document.getElementById(s.id);
-            if (el) window.scrollTo({ top: el.offsetTop - 60, behavior: "smooth" });
-          }}
+          onClick={() => scrollToSection(s.id)}
         >
           <span>{String(i + 1).padStart(2, "0")}</span>
           <span className="tick" />
